@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zzw.dao.danmuDao">
+    
+    <insert id="addDanmu" parameterType="com.zzw.Entity.Danmu.Danmu" useGeneratedKeys="true" keyProperty="id">
+        insert into
+            bilibili_db.t_danmu(userId, videoId, content, danmuTime, createTime)
+             VALUES(#{userId},#{videoId},#{content},#{danmuTime},#{createTime})
+    </insert>
+
+
+    <select id="getDanmus" parameterType="java.util.Map" resultType="com.zzw.Entity.Danmu.Danmu">
+        select
+        *
+        from
+        bilibili_db.t_danmu
+        where
+            videoId = #{videoId}
+        <if test="startDate!=null and startDate!=' ">
+            and createTime <![CDATA[>=]]> #{startDate}
+        </if>
+        <if test="endDate!=null and endDate!=' ">
+            and createTime <![CDATA[<=]]> #{endDate}
+        </if>
+    </select>
+
+
+</mapper>

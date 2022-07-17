@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zzw.dao.UserCoinDao">
+    
+    <select id="query" parameterType="java.lang.Long" resultType="java.lang.Long">
+        select amount from bilibili_db.t_user_coin where userId = #{userId}
+    </select>
+
+
+    
+    <update id="updateUserAmount">
+        update
+            bilibili_db.t_user_coin
+        set
+            amount =#{amount},
+            updateTime = #{updateTime}
+        where
+            userId=#{userId}
+    </update>
+
+
+
+</mapper>

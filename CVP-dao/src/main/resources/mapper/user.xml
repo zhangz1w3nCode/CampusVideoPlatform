@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zzw.dao.userDao">
+    
+    <select id="getUserByPhone" parameterType="java.lang.String" resultType="com.zzw.Entity.User">
+        select * from bilibili_db.t_user where phone =#{phone}
+    </select>
+
+
+    <insert id="addUser" parameterType="com.zzw.Entity.User" useGeneratedKeys="true" keyProperty="id">
+        insert into
+            bilibili_db.t_user(phone, email, password, salt, createTime)
+                       values (#{phone},#{email}, #{password}, #{salt}, #{createTime})
+    </insert>
+
+
+    <insert id="addUser_Info" parameterType="com.zzw.Entity.UserInfo">
+        insert into
+            bilibili_db.t_user_info(userId, nick, avatar, sign, gender, birth, createTime)
+                    values (#{userId},#{nick}, #{avatar}, #{sign}, #{gender}, #{birth}, #{createTime})
+    </insert>
+
+    <select id="getUserByID" parameterType="java.lang.Long" resultType="com.zzw.Entity.User">
+        select * from bilibili_db.t_user where id =#{userID}
+    </select>
+
+    <select id="getUserInfoByID" parameterType="java.lang.Long" resultType="com.zzw.Entity.UserInfo">
+        select * from bilibili_db.t_user_info where id =#{userID}
+    </select>
+
+
+    <select id=" getUserInfoByIds"  resultType="com.zzw.Entity.UserInfo">
+        select * from bilibili_db.t_user_info where 1=1
+            <if test="userIdList!=null and userIdList.size>0">
+                and  userId in
+                    <foreach collection="userIdList" item="userId" index="index" open="(" close=")" separator=",">
+                        #{userId}
+                    </foreach>
+            </if>
+    </select>
+
+    <select id=" pageContUserInfos" parameterType="java.util.Map" resultType="java.lang.Integer">
+        select count(1)
+        from bilibili_db.t_user_info
+         where 1=1
+        <if test="nick!=null and nick!=''">
+            and  nick like '%${nick}%'
+        </if>
+    </select>
+
+    <select id=" pageListUserInfos" parameterType="java.util.Map" resultType="com.zzw.Entity.UserInfo">
+        select *
+        from bilibili_db.t_user_info
+        where 1=1
+        <if test="nick!=null and nick!=''">
+            and  nick like '%${nick}%'
+        </if>
+        order by id desc
+        limit #{start},#{limit}
+    </select>
+
+
+
+    <delete id="deleterRefreshToken">
+        delete from
+            bilibili_db.t_refresh_token
+        where
+            refreshToken = #{refreshToken}
+    </delete>
+
+     <insert id="addRefreshToken">
+        insert into
+            bilibili_db.t_refresh_token(userId, refreshToken, createTime)
+        VALUES (#{userId},#{refreshToken},#{createTime})
+     </insert>
+    
+    
+    
+    <select id="refreshAccessToken" parameterType="java.lang.String" resultType="com.zzw.Entity.RefreshTokenDetail">
+
+        select *
+        from bilibili_db.t_refresh_token
+        where refreshToken=#{refreshToken}
+
+    </select>
+
+
+    <select id="batchGetUserInfoByUserIds" parameterType="java.util.Set" resultType="com.zzw.Entity.UserInfo">
+        select *
+        from bilibili_db.t_user_info
+        where
+            userId in
+            <foreach collection="userIdSet" item="userId" open="(" close=")" separator=",">
+                #{userId}
+            </foreach>
+    </select>
+
+
+</mapper>
